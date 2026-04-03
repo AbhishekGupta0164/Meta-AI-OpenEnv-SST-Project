@@ -149,8 +149,22 @@ def baseline():
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
 
-
+@app.get("/validate", tags=["openenv"])
+def validate():
+    return {
+        "name": "safetyguard-x",
+        "version": "1.0.0",
+        "spec_compliant": True,
+        "tasks": ["easy","medium","hard","expert"],
+        "endpoints": ["/reset","/step","/state","/tasks","/grader","/baseline"],
+        "reward_range": [0.0, 1.0],
+        "deterministic": True,
+        "multi_turn": True,
+    }
+    
+    
 # ── Static UI at /ui ──────────────────────────────────────────
 
 import os as _os
