@@ -12,7 +12,7 @@ from app.config import PROJECT_NAME, VERSION, DESCRIPTION, EXPECTED_BASELINE_SCO
 from app.models import AgentAction, ResetResult, StepResult, StateResult, TaskInfo
 from app.env import env_reset, env_step, env_state, env_grader
 from app.tasks import list_all_tasks
-
+_leaderboard = []
 
 # ── App Setup ─────────────────────────────────────────────────
 
@@ -163,7 +163,17 @@ def validate():
         "deterministic": True,
         "multi_turn": True,
     }
-    
+@app.get("/leaderboard", tags=["openenv"])
+def leaderboard():
+    from app.env import _leaderboard
+    sorted_lb = sorted(_leaderboard, key=lambda x: x["score"], reverse=True)
+    return {
+        "top_scores":     sorted_lb[:10],
+        "total_episodes": len(_leaderboard),
+        "average_score":  round(
+            sum(x["score"] for x in _leaderboard) / max(len(_leaderboard), 1), 4
+        )
+    }
     
 # ── Static UI at /ui ──────────────────────────────────────────
 

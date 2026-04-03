@@ -95,12 +95,12 @@
 #     turn_number:          int
 #     max_turns:            int
 #     current_query:        str
-#     conversation_history: List[ConversationTurn]
-#     active_policies:      List[PolicyRule]
-#     risk_level:           int
-#     flags:                StateFlags
-#     context_hint:         Optional[str]
-
+#     conversation_history: List[ConversationTurn] = []
+#     active_policies:      List[PolicyRule] = []
+#     risk_level:           int = 0
+#     flags:                StateFlags = StateFlags()
+#     context_hint:         Optional[str] = None
+#     context:              Optional[Dict[str, Any]] = None
 #     class Config:
 #         use_enum_values = True
 
