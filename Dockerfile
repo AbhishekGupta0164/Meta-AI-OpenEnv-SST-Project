@@ -17,12 +17,11 @@ RUN useradd -m -u 1000 user
 USER user
 WORKDIR /home/user/app
 
-
 # Install Python deps
 COPY --chown=user requirements.txt .
-RUN pip install --upgrade pip --no-cache-dir
-RUN pip install --no-cache-dir --upgrade pip \
+RUN pip install --upgrade pip --no-cache-dir \
  && pip install --no-cache-dir -r requirements.txt
+
 
 # Copy all project files
 COPY --chown=user . .
