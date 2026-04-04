@@ -78,17 +78,20 @@ class Episode:
                 attack_type=h.get("attack_type"),
                 flags=h.get("flags", {}),
             ))
-        
-        context = {
-             "timestamp":            str(self.session_id)[:8],
-             "attack_type":          self.attack_type,
-             "escalation_warning":   self.memory.is_escalating(),
-             "turns_remaining":      self.max_turns - self.turn_number,
-             "risk_trajectory":      self.memory.risk_trajectory[-3:],
-             "policy_conflict_active": False,
-             "hint": "Consider conversation history before deciding",
-        }   
-
+         
+        try: 
+            context = {
+                "timestamp":            str(self.session_id)[:8],
+                "attack_type":          self.attack_type,
+                "escalation_warning":   self.memory.is_escalating(),
+                "turns_remaining":      self.max_turns - self.turn_number,
+                "risk_trajectory":      self.memory.risk_trajectory[-3:],
+                "policy_conflict_active": False,
+                "hint": "Consider conversation history before deciding",
+           }   
+        except Exception:
+            context = {}
+     
         return Observation(
            task_id=self.task_id,
            turn_number=self.turn_number,

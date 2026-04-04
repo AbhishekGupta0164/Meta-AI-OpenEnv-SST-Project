@@ -3,6 +3,7 @@ import os
 import statistics
 from typing import Any, Dict, List, Optional
 
+from fastapi.responses import RedirectResponse
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -65,9 +66,6 @@ class GraderRequest(BaseModel):
 #     }
 
 # Fixing  the root to redirect to UI automatically
-
-from fastapi.responses import RedirectResponse
-
 @app.get("/", tags=["meta"])
 def root():
     return RedirectResponse(url="/ui")
