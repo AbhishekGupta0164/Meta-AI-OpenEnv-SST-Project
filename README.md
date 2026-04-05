@@ -22,8 +22,20 @@ You can simply open the index.html file and test it instantly.
 The AI automatically evaluates any query, makes a decision (Allow/Block/Modify), explains its reasoning in the right panel, and even shows the final safe response when appropriate.
 It supports multi-turn conversations, just like a real safety monitoring system used at OpenAI/Meta/xAI.
 I focused on making the AI fully autonomous while keeping full transparency through the Explainable AI panel.
-## To Run -  READ LINE NO.235 HERE
-python -m uvicorn app.main:app --host 0.0.0.0 --port 7860 --reload
+
+🛡️ SafetyGuard X
+├── 4 tasks: easy → medium → hard → expert
+├── 5 attack types: direct, encoded, roleplay, emotional, semantic
+├── 6-metric reward function (not binary)
+├── Adaptive adversary (gets harder on agent mistakes)
+├── Full OpenEnv spec: reset/step/state
+├── 8 active safety policies
+├── Beautiful interactive dashboard at /ui
+├── Leaderboard tracking all episodes
+├── /validate endpoint for auto-checker
+├── inference.py with mock agent fallback
+└── Deployed and live on HuggingFace
+
 
 ## 🔗 Links
 
