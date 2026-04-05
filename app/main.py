@@ -5,7 +5,7 @@
 import os
 from typing import Any, Dict, List
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -93,70 +93,96 @@ class GraderRequest(BaseModel):
 # """)
 #  grok update 
 
-# ──────────────────────────────────────────────────────────────
-# CRITICAL: Mount static folder (CSS/JS will work in /ui)
-# ──────────────────────────────────────────────────────────────
-base_dir = os.path.dirname(os.path.abspath(__file__))
-static_dir = os.path.join(base_dir, "static")
+# # ──────────────────────────────────────────────────────────────
+# # CRITICAL: Mount static folder (CSS/JS will work in /ui)
+# # ──────────────────────────────────────────────────────────────
+# base_dir = os.path.dirname(os.path.abspath(__file__))
+# static_dir = os.path.join(base_dir, "static")
 
-if not os.path.exists(static_dir):
-    static_dir = os.path.join(os.path.dirname(base_dir), "static")
+# if not os.path.exists(static_dir):
+#     static_dir = os.path.join(os.path.dirname(base_dir), "static")
 
-app.mount("/static", StaticFiles(directory=static_dir), name="static")
+# app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
-# ──────────────────────────────────────────────────────────────
-# ROOT /  →  MUST return JSON for the judge (exactly as before)
-# ──────────────────────────────────────────────────────────────
-@app.get("/")
-async def root():
-    return {
-        "environment": "SafetyGuard X",
-        "version": "1.0.0",
-        "description": "Adversarial AI Safety Stress Testing Environment. Simulates real-world jailbreak attempts, policy conflicts, and multi-turn adversarial interactions.",
-        "tasks": [
-            "easy",
-            "medium",
-            "hard",
-            "expert"
-        ],
-        "endpoints": [
-            "/reset",
-            "/step",
-            "/state",
-            "/tasks",
-            "/grader",
-            "/baseline",
-            "/health",
-            "/ui"
+# # ──────────────────────────────────────────────────────────────
+# # ROOT /  →  MUST return JSON for the judge (exactly as before)
+# # ──────────────────────────────────────────────────────────────
+# @app.get("/")
+# async def root():
+#     return {
+#         "environment": "SafetyGuard X",
+#         "version": "1.0.0",
+#         "description": "Adversarial AI Safety Stress Testing Environment. Simulates real-world jailbreak attempts, policy conflicts, and multi-turn adversarial interactions.",
+#         "tasks": [
+#             "easy",
+#             "medium",
+#             "hard",
+#             "expert"
+#         ],
+#         "endpoints": [
+#             "/reset",
+#             "/step",
+#             "/state",
+#             "/tasks",
+#             "/grader",
+#             "/baseline",
+#             "/health",
+#             "/ui"
+#         ]
+#     }
+
+# # ──────────────────────────────────────────────────────────────
+# # /ui  →  serves your full interactive dashboard (for humans/judges)
+# # ──────────────────────────────────────────────────────────────
+# @app.get("/ui", response_class=HTMLResponse, include_in_schema=False)
+# async def ui_dashboard():
+#     # Try all possible locations for index.html on HF
+#     possible_paths = [
+#         os.path.join(static_dir, "index.html"),
+#         os.path.join(base_dir, "static", "index.html"),
+#         "app/static/index.html",
+#         "static/index.html",
+#     ]
+    
+#     for file_path in possible_paths:
+#         if os.path.exists(file_path):
+#             with open(file_path, "r", encoding="utf-8") as f:
+#                 return HTMLResponse(content=f.read())
+    
+#     # Nice fallback if index.html is missing
+#     return HTMLResponse(content="""
+#     <h1 style="color:#00d4ff;text-align:center;margin-top:100px;font-family:monospace;">
+#         🛡️ SafetyGuard X Dashboard<br><br>
+#         <a href="/docs">📖 View API Docs</a>
+#     </h1>
+#     """)
+
+@app.get("/", include_in_schema=False)
+async def root(request: Request):
+    # If browser request → show UI
+    accept = request.headers.get("accept", "")
+    if "text/html" in accept:
+        paths = [
+            os.path.join(os.path.dirname(__file__), "static", "index.html"),
+            "app/static/index.html",
         ]
+        for p in paths:
+            if os.path.exists(p):
+                with open(p, "r", encoding="utf-8") as f:
+                    return HTMLResponse(content=f.read())
+    
+    # API client / judge → return JSON
+    return {
+        "environment":  PROJECT_NAME,
+        "version":      VERSION,
+        "description":  DESCRIPTION,
+        "tasks":        ["easy", "medium", "hard", "expert"],
+        "endpoints":    ["/reset", "/step", "/state", "/tasks",
+                        "/grader", "/baseline", "/health", "/ui",
+                        "/validate", "/leaderboard"],
+        "ui":           "/ui",
+        "docs":         "/docs",
     }
-
-# ──────────────────────────────────────────────────────────────
-# /ui  →  serves your full interactive dashboard (for humans/judges)
-# ──────────────────────────────────────────────────────────────
-@app.get("/ui", response_class=HTMLResponse, include_in_schema=False)
-async def ui_dashboard():
-    # Try all possible locations for index.html on HF
-    possible_paths = [
-        os.path.join(static_dir, "index.html"),
-        os.path.join(base_dir, "static", "index.html"),
-        "app/static/index.html",
-        "static/index.html",
-    ]
-    
-    for file_path in possible_paths:
-        if os.path.exists(file_path):
-            with open(file_path, "r", encoding="utf-8") as f:
-                return HTMLResponse(content=f.read())
-    
-    # Nice fallback if index.html is missing
-    return HTMLResponse(content="""
-    <h1 style="color:#00d4ff;text-align:center;margin-top:100px;font-family:monospace;">
-        🛡️ SafetyGuard X Dashboard<br><br>
-        <a href="/docs">📖 View API Docs</a>
-    </h1>
-    """)
-
 
 @app.get("/health", tags=["meta"])
 def health():
