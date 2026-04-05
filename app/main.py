@@ -11,6 +11,9 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from fastapi.responses import HTMLResponse
+
+
 from app.config import PROJECT_NAME, VERSION, DESCRIPTION
 from app.models import AgentAction, ResetResult, StepResult, StateResult, TaskInfo
 from app.env import env_reset, env_step, env_state, env_grader, _leaderboard
@@ -45,9 +48,23 @@ class GraderRequest(BaseModel):
     session_id: str
 
 # ── Root → redirect to UI ─────────────────────────────────────
+
 @app.get("/", tags=["meta"])
 def root():
-    return RedirectResponse(url="/ui")
+    return HTMLResponse(content="""
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="refresh" content="0; url=/ui">
+<title>SafetyGuard X</title>
+</head>
+<body style="background:#050b18;color:#00d4ff;font-family:monospace;text-align:center;padding:50px;">
+<h1>🛡️ SafetyGuard X</h1>
+<p>Redirecting to dashboard...</p>
+<p><a href="/ui" style="color:#00ff88;">Click here if not redirected</a></p>
+</body>
+</html>
+""")
 
 @app.get("/health", tags=["meta"])
 def health():
