@@ -79,8 +79,7 @@ def health():
 
 # ── Core OpenEnv Endpoints──────────────────────────────────────────────
 
-# @app.post("/reset", response_model=ResetResult, tags=["openenv"])
-@app.post("/reset", tags=["openenv"])
+@app.post("/reset", response_model=ResetResult, tags=["openenv"])
 async def reset(request: Request):
     try:
         # Handle empty body or missing fields
@@ -98,16 +97,12 @@ async def reset(request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-# @app.post("/step", response_model=StepResult, tags=["openenv"])
-@app.post("/step", tags=["openenv"])
+@app.post("/step", response_model=StepResult, tags=["openenv"])
 async def step(request: Request):
     try:
         body       = await request.json()
         session_id = body.get("session_id", "")
         action     = AgentAction(**body.get("action", {"decision":"block","reason":"default"}))
-    except Exception:
-        body = {}    
-        
         
         if not session_id:
             raise HTTPException(status_code=422, detail="session_id required")
@@ -120,8 +115,7 @@ async def step(request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-# @app.get("/state", response_model=StateResult, tags=["openenv"])
-@app.post("/state", tags=["openenv"])
+@app.get("/state", response_model=StateResult, tags=["openenv"])
 async def state(request: Request):
     try:
         # Handle empty body or missing fields (same pattern as /reset and /step)
