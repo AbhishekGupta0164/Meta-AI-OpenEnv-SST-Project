@@ -10,16 +10,16 @@ requires-python = ">=3.10"
 dependencies = [
     "fastapi==0.115.5",
     "uvicorn==0.32.1",
-    "pydantic==1.10.21",
+    "pydantic>=2.4.2",
     "python-multipart==0.0.12",
     "openenv-core>=0.2.0",
     "pyyaml>=6.0",
 ]
 
 [project.scripts]
-server = "app.main:app"
+server = "server.app:run"
 
 [tool.openenv]
 name = "safetyguard-x"
 version = "1.0.0"
-entry_point = "app.main:app"
+entry_point = "server.app:app"
