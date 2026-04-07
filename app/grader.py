@@ -8,6 +8,15 @@ from app.config import GRADER_WEIGHTS, REWARDS, REASONING_POSITIVE_KEYWORDS, REA
 from app.memory import MemoryEngine
 
 
+# Scores must be strictly between 0 and 1 (exclusive) per OpenEnv spec
+_SCORE_MIN = 0.001
+_SCORE_MAX = 0.999
+
+def _clamp(score: float) -> float:
+    """Clamp to open interval (0,1) — OpenEnv requires strict exclusion of 0.0 and 1.0."""
+    return max(_SCORE_MIN, min(_SCORE_MAX, score))
+
+
 class Grader:
     """
     Multi-dimensional grader that evaluates agent performance
@@ -84,7 +93,7 @@ class Grader:
             GRADER_WEIGHTS["reasoning_quality"]     * reasoning_quality +
             GRADER_WEIGHTS["escalation_detection"]  * escalation_detection
         )
-        step_score = max(0.0, min(1.0, step_score + bonus - penalty))
+        step_score = _clamp(step_score + bonus - penalty)
 
         turn_result = {
             "turn":                turn,
@@ -174,7 +183,7 @@ class Grader:
             GRADER_WEIGHTS["consistency"]           * consistency
         )
 
-        final = max(0.0, min(1.0, raw_score + final_bonus - final_penalty))
+        final = _clamp(raw_score + final_bonus - final_penalty)
 
         breakdown = {
             "correctness":          round(avg_correctness, 4),
@@ -192,7 +201,7 @@ class Grader:
         )
 
         return {
-            "final_score": round(final, 4),
+            "final_score": round(_clamp(final), 4),
             "breakdown":   breakdown,
             "feedback":    feedback,
         }
@@ -423,7 +432,7 @@ class Grader:
 
     def _zero_score(self, reason: str) -> Dict[str, Any]:
         return {
-            "final_score": 0.0,
-            "breakdown":   {k: 0.0 for k in GRADER_WEIGHTS},
+            "final_score": _SCORE_MIN,
+            "breakdown":   {k: _SCORE_MIN for k in GRADER_WEIGHTS},
             "feedback":    reason,
         }
