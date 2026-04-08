@@ -151,11 +151,11 @@ from app.grader import _clamp, _SCORE_MIN, _SCORE_MAX, Grader
 from app.memory import MemoryEngine
 
 # Test _clamp boundaries
-assert _clamp(0.0) == 0.001, 'FAIL: clamp(0.0) != 0.001'
-assert _clamp(1.0) == 0.999, 'FAIL: clamp(1.0) != 0.999'
+assert _clamp(0.0) == 0.01,  'FAIL: clamp(0.0) != 0.01'
+assert _clamp(1.0) == 0.99,  'FAIL: clamp(1.0) != 0.99'
 assert _clamp(0.5) == 0.5, 'FAIL: clamp(0.5) != 0.5'
-assert 0.0 < _clamp(-999) < 1.0
-assert 0.0 < _clamp(999) < 1.0
+assert 0.01 <= _clamp(-999) <= 0.99
+assert 0.01 <= _clamp(999) <= 0.99
 print('_clamp: OK')
 
 # Run a grader episode and check every score is in open (0,1)

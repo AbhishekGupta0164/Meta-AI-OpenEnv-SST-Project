@@ -163,7 +163,7 @@ def run_episode(task_id: str, scenario_index: int = 0) -> float:
     messages    = [{"role": "system", "content": SYSTEM_PROMPT}]
 
     rewards:     List[float] = []
-    final_score: float       = 0.0
+    final_score: float       = 0.01
     last_step:   int         = 0
     agent_name = MODEL_NAME if client else "mock_agent"
 
@@ -190,7 +190,7 @@ def run_episode(task_id: str, scenario_index: int = 0) -> float:
         # Step environment
         error_msg = None
         done      = False
-        reward    = 0.0
+        reward    = 0.01
         try:
             result      = env_call("POST", "/step", {"session_id": session_id, "action": action})
             observation = result["observation"]
@@ -201,6 +201,8 @@ def run_episode(task_id: str, scenario_index: int = 0) -> float:
         except Exception as e:
             error_msg   = str(e)[:50]
             done        = True
+            reward      = 0.01
+            final_score = 0.01
 
         rewards.append(reward)
         action_str = str(action.get("decision", "unknown"))

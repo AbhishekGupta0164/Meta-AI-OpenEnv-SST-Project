@@ -133,7 +133,7 @@ def run_episode(task_id: str, scenario_index: int = 0) -> float:
     session_id  = reset["session_id"]
     observation = reset["observation"]
     messages    = [{"role": "system", "content": SYSTEM_PROMPT}]
-    final_score = 0.0
+    final_score = 0.01
 
     for _ in range(observation["max_turns"] + 1):
         if observation.get("done"):
