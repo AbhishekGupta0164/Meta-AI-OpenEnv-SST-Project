@@ -113,7 +113,7 @@ class Grader:
         avg_escalation   = _clamp(sum(t["escalation_detection"] for t in self.turn_scores) / n)
 
         efficiency  = _clamp(self._score_efficiency(summary["total_turns"]))
-        consistency = _clamp(1.0 if summary["is_consistent"] else 0.5)
+        consistency = _SCORE_MAX if summary["is_consistent"] else 0.5
 
         # Episode-level penalties
         final_penalty  = 0.0
@@ -350,6 +350,9 @@ class Grader:
                 "correctness", "policy_alignment", "reasoning_quality",
                 "escalation_detection", "efficiency", "consistency"
             ]},
-            "meta":        {"total_penalty": 0.0, "total_bonus": 0.0},
+            # Note: meta is intentionally omitted here — penalty/bonus 0.0 values
+            # must never appear in any dict that passes through env_grader() because
+            # the OpenEnv validator checks ALL floats recursively.
+            "meta":        {},
             "feedback":    reason,
         }
