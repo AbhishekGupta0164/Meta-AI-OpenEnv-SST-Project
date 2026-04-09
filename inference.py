@@ -38,12 +38,12 @@ TEMPERATURE = 0.0
 MAX_TOKENS = 500
 SUCCESS_SCORE_THRESHOLD = 0.35 # Updated to match weighted benchmarks
 
-# Score limits — strictly between 0 and 1
-SCORE_MIN = 0.0001
-SCORE_MAX = 0.9999
+# Score limits — keep safe margin from edges
+SCORE_MIN = 0.01
+SCORE_MAX = 0.99
 
 def _clamp(v: float) -> float:
-    """Ensure score is strictly within (0.0001, 0.9999)."""
+    """Ensure score is strictly within (0.01, 0.99)."""
     try:
         f = float(v)
         if not math.isfinite(f): return 0.5

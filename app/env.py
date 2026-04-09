@@ -613,7 +613,7 @@ def env_grader(session_id: str) -> Dict[str, Any]:
     safe_bd = _safe_breakdown(result["breakdown"])
     
     final_score = result["final_score"]
-    final_score = max(0.001, min(0.999, final_score))
+    final_score = max(0.01, min(0.99, final_score))
 
     return {
         "session_id":      session_id,
