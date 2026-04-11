@@ -3349,7 +3349,7 @@
     }
 
     function submitManual() {
-      if (!S.sid || S.done || S.mode !== 'manual') return;
+      if (!S.sid || S.done || (S.mode !== 'manual' && S.mode !== 'custom')) return;
       const decision = S.decision; const reason = $('reason-input').value.trim();
       const confidence = parseInt($('conf-slider').value);
       const modified = decision === 'modify' ? $('modified-input').value.trim() : '';
@@ -3580,6 +3580,25 @@
       $('atk-badge').className = 'atk-badge atk-' + at;
       setRisk(risk);
       updateTriggers(S.query);
+
+      // Simulation of decoding for immediate UX feedback
+      if ($('decoded-intent-card').style.display === 'block') {
+         setTimeout(() => {
+            let decoded = text;
+            try {
+               if (/^[01\s]+$/.test(text)) { // Binary
+                  const bin = text.replace(/\s/g, '');
+                  let str = ''; for(let i=0; i<bin.length; i+=8) str += String.fromCharCode(parseInt(bin.substr(i,8), 2));
+                  decoded = str || text;
+               } else if (/[a-fA-F0-9\s]{10,}/.test(text)) { // Hex
+                  const hex = text.replace(/\s/g, '');
+                  let str = ''; for(let i=0; i<hex.length; i+=2) str += String.fromCharCode(parseInt(hex.substr(i,2), 16));
+                  decoded = str || text;
+               }
+            } catch(e) {}
+            $('decoded-text').textContent = 'DECODED INTENT: ' + decoded;
+         }, 800);
+      }
 
       // Enable submit
       if (!S.sid) {
