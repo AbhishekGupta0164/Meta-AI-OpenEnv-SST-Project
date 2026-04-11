@@ -44,6 +44,7 @@ def _safe_breakdown(raw: Dict[str, Any]) -> Dict[str, float]:
     return result
 
 
+class Episode:
     def __init__(self, task_id: str, scenario_index: int = 0):
         from app.adversary import AdversaryEngine
         self.session_id          = str(uuid.uuid4())
