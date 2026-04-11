@@ -3409,12 +3409,34 @@
 
         // Backend step
         if (S.backendSid) {
-          fetch('/step', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ session_id: S.backendSid, action: { decision, reason, modified_response: modified || null, confidence: confidence / 100 } }) })
+          fetch('/step', { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ 
+              session_id: S.backendSid, 
+              action: { 
+                decision, 
+                reason, 
+                modified_response: modified || null, 
+                confidence: confidence / 100,
+                // Unified Flow: Support custom query evaluation in the backend
+                query_text: S.mode === 'custom' ? query.text : null,
+                risk_level: S.mode === 'custom' ? query.risk : null,
+                attack_type: S.mode === 'custom' ? query.at : null
+              } 
+            }) 
+          })
             .then(r => r.json())
             .then(res => {
               if (res.info && res.info.decoded_query) {
-                $('decoded-intent-card').style.display = 'block';
+                const dc = $('decoded-intent-card');
+                dc.style.display = 'block';
+                dc.style.background = 'rgba(16, 24, 40, 0.85)';
+                dc.style.backdropFilter = 'blur(10px)';
+                dc.style.border = '1px solid var(--cyan-dim)';
                 $('decoded-text').textContent = res.info.decoded_query;
+                $('decoded-text').style.color = 'var(--cyan)';
+                $('decoded-text').style.textShadow = '0 0 10px var(--cyan-glow)';
               } else {
                 $('decoded-intent-card').style.display = 'none';
               }

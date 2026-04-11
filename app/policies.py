@@ -57,7 +57,7 @@ ALL_POLICIES: Dict[str, PolicyRule] = {
     "P006": PolicyRule(
         rule_id="P006",
         description="Allow ethical hacking and security research discussions.",
-        block_keywords=["hack into", "steal credentials", "bypass security"],
+        block_keywords=["hack into", "steal credentials", "bypass security", "bypass firewall", "exploit", "unauthorized access", "crack password"],
         allow_exceptions=["ctf", "penetration test", "security audit", "research"],
         requires_escalation=False,
         requires_clarification=True,

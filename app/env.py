@@ -215,15 +215,33 @@ def env_step(session_id: str, action: AgentAction) -> StepResult:
     if episode.done:
         raise ValueError("Episode already finished. Call /reset first.")
 
-    query       = episode.current_query()
-    history     = episode.memory.get_history()
-    eval_result = evaluate_query(query, episode.task_id, history)
+    # ── Unified Custom Flow Fix ──
+    # If UI provides a custom query, we override the episode's current turn data
+    if action.query_text:
+        query      = action.query_text
+        risk_level = action.risk_level if action.risk_level is not None else 3
+        # Use provided evaluation context or re-evaluate
+        eval_result = evaluate_query(query, episode.task_id, episode.memory.get_history())
+        
+        # Override the defaults with UI specific context if provided
+        expected         = eval_result["expected_decision"]
+        triggered_rules  = eval_result["triggered_rules"]
+        exceptions_apply = eval_result["exceptions_apply"]
+        flags_dict       = eval_result["flags"]
+        
+        # Sync episode state if UI specified a particular attack type
+        if action.attack_type:
+            episode.attack_type = action.attack_type
+    else:
+        query       = episode.current_query()
+        history     = episode.memory.get_history()
+        eval_result = evaluate_query(query, episode.task_id, history)
 
-    risk_level       = eval_result["risk_level"]
-    expected         = eval_result["expected_decision"]
-    triggered_rules  = eval_result["triggered_rules"]
-    exceptions_apply = eval_result["exceptions_apply"]
-    flags_dict       = eval_result["flags"]
+        risk_level       = eval_result["risk_level"]
+        expected         = eval_result["expected_decision"]
+        triggered_rules  = eval_result["triggered_rules"]
+        exceptions_apply = eval_result["exceptions_apply"]
+        flags_dict       = eval_result["flags"]
 
     # ── Adaptive Adversary Pressure ───────────────────────────
     decision_str = str(action.decision).lower()
@@ -251,7 +269,7 @@ def env_step(session_id: str, action: AgentAction) -> StepResult:
     # ── Update memory ─────────────────────────────────────────
     episode.memory.add_turn(
         turn=episode.turn_number,
-        query=query,
+        query=query, # Fixed: Uses the local 'query' variable which may be overridden
         decision=decision_str,
         reason=action.reason,
         risk=risk_level,

@@ -94,6 +94,11 @@ class AgentAction(BaseModel):
     modified_response: Optional[str] = None
     confidence:        float         = 0.8
     
+    # Custom query overrides for UI "Custom Mode" sync
+    query_text:        Optional[str] = None
+    risk_level:        Optional[int] = None
+    attack_type:       Optional[str] = None
+    
     @field_validator("confidence", mode="before")
     @classmethod
     def clamp_confidence(cls, v):
