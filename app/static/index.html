@@ -2723,61 +2723,92 @@
 
       <!-- ANALYTICS TAB -->
       <div class="tab-content" id="tab-analytics">
-        <div class="analytics-grid">
-        <div class="an-card" style="grid-column: span 2; position: relative;">
-          <div class="an-title">Training Progress — Safetyforge Arena</div>
-          <div style="position: relative;">
-             <div id="training-curve" style="width:100%; height:300px; background: var(--deep); border-radius: 8px;"></div>
-             <div id="training-overlay" style="display:none; position: absolute; inset: 0; background: rgba(3, 6, 15, 0.85); border-radius: 8px; z-index: 10; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
-                <div class="spin" style="display:block; width:40px; height:40px; border-width:3px; margin-bottom: 12px;"></div>
-                <div style="font-family: var(--mono); font-size: 1rem; color: var(--cyan); text-shadow: 0 0 10px var(--cyan-glow);">TRAINING IN PROGRESS</div>
-                <div id="training-prog-text" style="font-size: .7rem; color: var(--text3); margin-top: 5px;">Optimizing policy...</div>
-             </div>
-          </div>
-          <div style="margin-top: 15px; display: flex; gap: 10px;">
-             <button id="btn-dataset" onclick="downloadDataset()" class="d-btn" style="flex: 1; border-color: var(--purple); color: var(--purple);">
-                <span class="di">📥</span> Download Training Dataset
-             </button>
-             <button id="btn-train" onclick="startTraining()" class="d-btn" style="flex: 1; border-color: var(--green); color: var(--green);">
-                <span class="di">🔥</span> Re-Train Policy (PPO)
-             </button>
-          </div>
+        <div class="an-top-row" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+           <div style="font-size:1.1rem; font-weight:700; color:var(--text); text-shadow: 0 0 10px rgba(0,212,255,0.2);">📊 Performance Intelligence</div>
+           <div style="display:flex; gap:10px; align-items:center;">
+              <span style="font-size:.65rem; color:var(--text3); font-family:var(--mono);">FILTER BY TASK:</span>
+              <select id="an-filter" onchange="updateAnalytics()" style="padding:5px 10px; background:var(--deep); border:1px solid var(--border); border-radius:var(--r-sm); color:var(--cyan); font-family:var(--mono); font-size:.7rem; outline:none; cursor:pointer;">
+                 <option value="all">ALL TASKS</option>
+                 <option value="easy">EASY</option>
+                 <option value="medium">MEDIUM</option>
+                 <option value="hard">HARD</option>
+                 <option value="expert">EXPERT</option>
+              </select>
+           </div>
         </div>
-          <div class="an-card">
-            <div class="an-title">Overall Performance</div>
-            <div class="score-big" id="an-score" style="color:var(--green);">—</div>
-            <div class="score-sub" id="an-score-sub">Complete an episode to see scores</div>
-          </div>
-          <div class="an-card">
-            <div class="an-title">Decision Distribution</div>
-            <div id="an-dist" style="font-size:.78rem;color:var(--text3);padding:20px 0;text-align:center;">No data yet
-            </div>
-          </div>
-          <div class="an-card" style="grid-column:span 2;">
-            <div class="an-title">Metric Breakdown</div>
-            <div id="an-metrics">
-              <div class="perf-bar-row"><span class="pbr-label">Correctness</span>
-                <div class="pbr-bar">
-                  <div class="pbr-fill" id="an-c" style="width:0%;background:var(--green);"></div>
-                </div><span class="pbr-val" id="an-cv">—</span>
+
+        <div class="analytics-grid">
+           <!-- Row 1: Training & Trend -->
+           <div class="an-card" style="grid-column: span 2; position: relative;">
+              <div class="an-title">Training Progress — Safetyforge Arena</div>
+              <div style="position: relative;">
+                 <div id="training-curve" style="width:100%; height:260px; background: var(--deep); border-radius: 8px;"></div>
+                 <div id="training-overlay" style="display:none; position: absolute; inset: 0; background: rgba(3, 6, 15, 0.85); border-radius: 8px; z-index: 10; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+                    <div class="spin" style="display:block; width:40px; height:40px; border-width:3px; margin-bottom: 12px;"></div>
+                    <div style="font-family: var(--mono); font-size: 1rem; color: var(--cyan); text-shadow: 0 0 10px var(--cyan-glow);">TRAINING IN PROGRESS</div>
+                    <div id="training-prog-text" style="font-size: .7rem; color: var(--text3); margin-top: 5px;">Optimizing policy...</div>
+                 </div>
               </div>
-              <div class="perf-bar-row"><span class="pbr-label">Policy Align</span>
-                <div class="pbr-bar">
-                  <div class="pbr-fill" id="an-p" style="width:0%;background:var(--cyan);"></div>
-                </div><span class="pbr-val" id="an-pv">—</span>
+              <div style="margin-top: 15px; display: flex; gap: 10px;">
+                 <button id="btn-dataset" onclick="downloadDataset()" class="d-btn" style="flex: 1; border-color: var(--purple); color: var(--purple);">
+                    <span class="di">📥</span> Download Dataset
+                 </button>
+                 <button id="btn-train" onclick="startTraining()" class="d-btn" style="flex: 1; border-color: var(--green); color: var(--green);">
+                    <span class="di">🔥</span> Re-Train Policy
+                 </button>
               </div>
-              <div class="perf-bar-row"><span class="pbr-label">Reasoning</span>
-                <div class="pbr-bar">
-                  <div class="pbr-fill" id="an-r" style="width:0%;background:var(--purple);"></div>
-                </div><span class="pbr-val" id="an-rv">—</span>
+           </div>
+
+           <!-- Row 2: Safety Trend & Radar -->
+           <div class="an-card">
+              <div class="an-title">Safety Score Trend</div>
+              <div id="chart-trend" style="width:100%; height:220px;"></div>
+           </div>
+           <div class="an-card">
+              <div class="an-title">Safety Signature (Radar)</div>
+              <div id="chart-radar" style="width:100%; height:220px;"></div>
+           </div>
+
+           <!-- Row 3: Decision Profile & Risk Profile -->
+           <div class="an-card">
+              <div class="an-title">Decision Profile</div>
+              <div id="chart-pie" style="width:100%; height:220px;"></div>
+           </div>
+           <div class="an-card">
+              <div class="an-title">Risk Exposure Matrix</div>
+              <div id="chart-risk" style="width:100%; height:220px;"></div>
+           </div>
+
+           <!-- Row 4: Summary Info -->
+           <div class="an-card" style="grid-column: span 2; display:flex; justify-content:space-around; align-items:center; padding: 20px;">
+              <div style="text-align:center;">
+                 <div class="m-title">Lifetime Score</div>
+                 <div class="score-big" id="an-score" style="color:var(--green); font-size: 2.2rem; margin: 0;">—</div>
+                 <div class="score-sub" id="an-score-sub" style="font-size: .65rem;">Ep: —</div>
               </div>
-              <div class="perf-bar-row"><span class="pbr-label">Escalation</span>
-                <div class="pbr-bar">
-                  <div class="pbr-fill" id="an-e" style="width:0%;background:var(--orange);"></div>
-                </div><span class="pbr-val" id="an-ev">—</span>
+              <div style="width:1px; height:50px; background:var(--border);"></div>
+              <div style="flex: 0.6;">
+                 <div class="an-title" style="margin-bottom:8px;">Metric Breakdown</div>
+                 <div id="an-metrics" style="display:grid; grid-template-columns: 1fr 1fr; gap: x 15px;">
+                    <div class="perf-bar-row">
+                       <span class="pbr-label">C</span>
+                       <div class="pbr-bar"><div class="pbr-fill" id="an-c" style="width:0%; background:var(--green);"></div></div>
+                    </div>
+                    <div class="perf-bar-row">
+                       <span class="pbr-label">P</span>
+                       <div class="pbr-bar"><div class="pbr-fill" id="an-p" style="width:0%; background:var(--cyan);"></div></div>
+                    </div>
+                    <div class="perf-bar-row">
+                       <span class="pbr-label">R</span>
+                       <div class="pbr-bar"><div class="pbr-fill" id="an-r" style="width:0%; background:var(--purple);"></div></div>
+                    </div>
+                    <div class="perf-bar-row">
+                       <span class="pbr-label">E</span>
+                       <div class="pbr-bar"><div class="pbr-fill" id="an-e" style="width:0%; background:var(--orange);"></div></div>
+                    </div>
+                 </div>
               </div>
-            </div>
-          </div>
+           </div>
         </div>
       </div>
 
@@ -3015,15 +3046,20 @@
       S.mode = mode;
       // Hide custom wrap unless custom mode
       if ($('custom-query-wrap')) $('custom-query-wrap').style.display = (mode === 'custom') ? 'block' : 'none';
+      
+      // Update active classes for all mode buttons
       $('mode-auto').classList.toggle('active', mode === 'auto');
       $('mode-manual').classList.toggle('active', mode === 'manual');
-      $('pill-mode').textContent = mode === 'auto' ? 'AUTO' : 'MANUAL';
-      $('pill-mode').style.color = mode === 'auto' ? 'var(--cyan)' : 'var(--purple)';
+      if ($('mode-custom')) $('mode-custom').classList.toggle('active', mode === 'custom');
+      
+      $('pill-mode').textContent = mode === 'auto' ? 'AUTO' : (mode === 'manual' ? 'MANUAL' : 'CUSTOM');
+      $('pill-mode').style.color = mode === 'auto' ? 'var(--cyan)' : (mode === 'manual' ? 'var(--purple)' : 'var(--yellow)');
       const mi = $('mode-indicator');
       const ar = $('auto-result');
       const ms = $('manual-section');
       const cs = $('comp-section');
       const al = $('auto-log');
+      
       if (mode === 'auto') {
         mi.className = 'mode-indicator auto'; $('mi-icon').textContent = '🤖';
         $('mi-text').textContent = 'AUTO MODE — AI agent automatically processes each query and shows its reasoning';
@@ -3031,24 +3067,24 @@
         al.style.display = S.history.length > 0 ? 'block' : 'none';
         cs.style.display = 'none';
         $('btn-run').textContent = '▶ RUN';
-      } else {
+      } else if (mode === 'manual') {
         mi.className = 'mode-indicator manual'; $('mi-icon').textContent = '👤';
         $('mi-text').textContent = 'MANUAL MODE — You evaluate each query. Your score is compared against the correct answer.';
         ar.style.display = 'none'; ms.style.display = S.sid ? 'block' : 'none';
         al.style.display = 'none';
         cs.style.display = S.history.length > 0 ? 'block' : 'none';
         $('btn-run').textContent = '▶ SUBMIT';
-      }
-      // ADD THIS inside setMode() function after the else block:
-      if (mode === 'custom') {
+        if ($('btn-submit')) $('btn-submit').disabled = !S.sid;
+      } else if (mode === 'custom') {
         mi.className = 'mode-indicator manual';
         $('mi-icon').textContent = '✏️';
         $('mi-text').textContent = 'CUSTOM MODE — Type your own query and evaluate it against the safety policies.';
         ar.style.display = 'none';
-        ms.style.display = S.sid ? 'block' : 'none';
+        ms.style.display = 'block'; // Always show in custom if we have a query
         al.style.display = 'none';
         cs.style.display = 'none';
         $('btn-run').textContent = '▶ SUBMIT';
+        if ($('btn-submit')) $('btn-submit').disabled = false;
         // Show custom query input
         $('custom-query-wrap').style.display = 'block';
       }
@@ -3103,9 +3139,15 @@
 
       // Show decoding status in UI if needed
       const dCard = $('decoded-intent-card');
-      if (isEncoded && S.mode === 'custom') {
+      if (S.mode === 'custom') {
         dCard.style.display = 'block';
-        $('decoded-text').textContent = 'System is decoding obfuscated input...';
+        if (isEncoded) {
+          $('decoded-text').textContent = 'System is decoding obfuscated input...';
+        } else {
+          // Identify attack type
+          const label = isRoleplay ? 'ROLEPLAY ATTEMPT' : (harmfulRx.test(q) ? 'DIRECT MALICIOUS REQUEST' : 'BENIGN QUERY');
+          $('decoded-text').textContent = 'ANALYZED INTENT: ' + label;
+        }
       } else {
         dCard.style.display = 'none';
       }
@@ -3143,7 +3185,7 @@
       if (S.history.length === 0) { te.innerHTML = '<div style="font-size:.7rem;color:var(--text3);text-align:center;padding:8px;">No turns yet.</div>'; return; }
       te.innerHTML = '';
       S.history.forEach((h, i) => {
-        const info = RISK_INFO[clamp(h.risk, 0, 5)]; const pct = (h.risk / 5) * 100;
+        const info = RISK_INFO[clamp(Math.round(h.risk), 0, 5)]; const pct = (h.risk / 5) * 100;
         const d = document.createElement('div'); d.className = 'te-item'; d.style.animationDelay = (i * .08) + 's';
         d.innerHTML = '<span class="te-turn">Turn ' + h.turn + '</span><div class="te-bar"><div class="te-fill" style="width:' + pct + '%;background:' + info.bc + ';"></div></div><span class="te-lbl" style="color:' + info.c + ';">' + info.l + '</span>';
         te.appendChild(d);
@@ -3485,34 +3527,88 @@
 
     /* ════════════════════════════ ANALYTICS */
     function updateAnalytics() {
-      if (S.completedEpisodes.length === 0 && S.turn === 0) return;
-      const score = S.reward; const grade = GRADES.find(g => score >= g.min) || GRADES[GRADES.length - 1];
-      $('an-score').textContent = Math.floor(score + 0.5); $('an-score').style.color = grade.c;
-      $('an-score-sub').textContent = 'Last episode: ' + S.task.toUpperCase() + ' (' + S.history.length + ' turns)';
-      const metrics = [['an-c', 'an-cv', S.metrics.c, 'var(--green)'], ['an-p', 'an-pv', S.metrics.p, 'var(--cyan)'], ['an-r', 'an-rv', S.metrics.r, 'var(--purple)'], ['an-e', 'an-ev', S.metrics.e, 'var(--orange)']];
-      metrics.forEach(([bid, vid, val, color]) => { $(bid).style.width = clamp(val * 100, 0, 100) + '%'; $(bid).style.background = color; $(vid).textContent = (val * 100).toFixed(0) + '%'; $(vid).style.color = color; });
-      const dist = $('an-dist'); dist.innerHTML = '';
-      Object.entries(S.allDecisions).filter(([, v]) => v > 0).forEach(([k, v]) => {
-        const colors = { allow: 'var(--green)', block: 'var(--red)', modify: 'var(--yellow)', escalate: 'var(--red)', clarify: 'var(--cyan)' };
-        const d = document.createElement('div'); d.className = 'perf-bar-row';
-        const pct = S.turn > 0 ? Math.floor((v / S.turn * 100) + 0.5) : 0;
-        d.innerHTML = '<span class="pbr-label" style="text-transform:uppercase;font-size:.65rem;">' + k + '</span><div class="pbr-bar"><div class="pbr-fill" style="width:' + pct + '%;background:' + colors[k] + ';"></div></div><span class="pbr-val" style="color:' + colors[k] + ';">' + v + '</span>';
-        dist.appendChild(d);
-      });
-      const hl = $('an-history'); hl.innerHTML = '';
-      S.history.slice().reverse().forEach(h => {
-        const tm = { easy: 'tt-easy', medium: 'tt-medium', hard: 'tt-hard', expert: 'tt-expert' };
-        const d = document.createElement('div'); d.className = 'hist-card';
-        const hcsc = h.correct ? 'color:var(--green)' : 'color:var(--yellow)';
-        d.innerHTML = '<div class="hc-top"><span class="hc-task ' + tm[S.task] + '" style="padding:2px 8px;border-radius:3px;font-size:.65rem;">' + S.task.toUpperCase() + ' T' + h.turn + '</span><span class="hc-score" style="' + hcsc + ';">' + h.decision.toUpperCase() + '</span></div><div class="hc-query">' + h.query + '</div><div class="hc-bottom"><span class="hc-turn">Risk: ' + h.risk + '/5</span><span class="hc-decision hcd-' + h.decision + '">' + h.decision.toUpperCase() + '</span><span style="font-size:.6rem;color:' + (h.correct ? 'var(--green)' : 'var(--red)') + ';">' + (h.correct ? '✓ Correct' : '✗ Wrong') + '</span></div>';
-        hl.appendChild(d);
-      });
-      S.completedEpisodes.slice().reverse().forEach(ep => {
-        const g = GRADES.find(g => ep.score >= g.min) || GRADES[GRADES.length - 1];
-        const d = document.createElement('div'); d.className = 'hist-card';
-        d.innerHTML = '<div class="hc-top"><span class="hc-task" style="background:rgba(168,85,247,.12);color:var(--purple);padding:2px 8px;border-radius:3px;font-size:.65rem;">COMPLETED • ' + ep.task.toUpperCase() + ' • ' + ep.mode.toUpperCase() + '</span><span class="hc-score" style="color:' + g.c + ';">' + ep.score + '</span></div><div class="hc-query">' + ep.turns.length + ' turns completed at ' + ep.timestamp + '</div><div class="hc-bottom"><span class="hc-turn">' + ep.turns.length + ' queries</span><span class="status-pill sp-done">' + g.l + '</span></div>';
-        hl.appendChild(d);
-      });
+      const filter = $('an-filter')?.value || 'all';
+      let episodes = S.completedEpisodes;
+      if (filter !== 'all') episodes = episodes.filter(e => e.task === filter);
+      
+      if (episodes.length === 0 && (filter !== 'all' || S.turn === 0)) {
+         ['chart-trend', 'chart-radar', 'chart-pie', 'chart-risk'].forEach(id => {
+            const el = $(id); if (el) el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-size:.7rem;">Insufficient data for selected filter</div>';
+         });
+         return;
+      }
+
+      const score = episodes.length > 0 ? episodes.reduce((a, b) => a + b.score, 0) / episodes.length : S.reward;
+      const grade = GRADES.find(g => score >= g.min) || GRADES[GRADES.length - 1];
+      
+      $('an-score').textContent = Math.floor(score + 0.5);
+      $('an-score').style.color = grade.c;
+      $('an-score-sub').textContent = filter === 'all' ? `LIFETIME AVG (${S.completedEpisodes.length} eps)` : `TASK AVG (${episodes.length} eps)`;
+
+      // Map metrics for breakdown bars (using lifetime or current if no eps)
+      const mSource = episodes.length > 0 ? episodes[episodes.length-1].metrics || S.metrics : S.metrics;
+      const metrics = [['an-c', mSource.c, 'var(--green)'], ['an-p', mSource.p, 'var(--cyan)'], ['an-r', mSource.r, 'var(--purple)'], ['an-e', mSource.e, 'var(--orange)']];
+      metrics.forEach(([bid, val, color]) => { const el = $(bid); if(el) { el.style.width = clamp(val * 100, 0, 100) + '%'; el.style.background = color; } });
+
+      const layoutBase = {
+        paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+        font: { color: 'rgba(232, 244, 253, 0.5)', size: 9 },
+        margin: { t: 30, r: 10, b: 30, l: 30 },
+        showlegend: false
+      };
+
+      // 1. TREND CHART (Line)
+      if (episodes.length > 1) {
+         const trendData = [{
+            x: episodes.map((_, i) => i + 1),
+            y: episodes.map(e => e.score),
+            type: 'scatter', mode: 'lines+markers',
+            line: { color: 'var(--cyan)', width: 2, shape: 'spline' },
+            marker: { color: 'var(--cyan)', size: 6 }
+         }];
+         Plotly.newPlot('chart-trend', trendData, { ...layoutBase, title: { text: 'Score Progression', font: { size: 10 } } }, { displayModeBar: false });
+      }
+
+      // 2. RADAR CHART (Safety Signature)
+      const radarData = [{
+         type: 'scatterpolar',
+         r: [mSource.c, mSource.p, mSource.r, mSource.e, mSource.ef, mSource.cn].map(v => v * 100),
+         theta: ['Correct', 'Policy', 'Reason', 'Escalate', 'Effcy', 'Consty'],
+         fill: 'toself',
+         fillcolor: 'rgba(0, 212, 255, 0.15)',
+         line: { color: 'var(--cyan)' }
+      }];
+      Plotly.newPlot('chart-radar', radarData, { 
+         ...layoutBase,
+         polar: { bgcolor: 'rgba(0,0,0,0)', radialaxis: { visible: true, range: [0, 100], color: 'rgba(255,255,255,0.1)' }, angularaxis: { color: 'rgba(255,255,255,0.4)' } },
+         margin: { t: 20, r: 20, b: 20, l: 20 }
+      }, { displayModeBar: false });
+
+      // 3. PIE CHART (Decision Profile)
+      const dCounts = filter === 'all' ? S.allDecisions : episodes.reduce((acc, ep) => {
+         ep.turns.forEach(t => acc[t.decision] = (acc[t.decision] || 0) + 1); return acc;
+      }, {});
+      const pieData = [{
+         values: Object.values(dCounts),
+         labels: Object.keys(dCounts).map(k => k.toUpperCase()),
+         type: 'pie',
+         hole: .4,
+         marker: { colors: ['#00ff88', '#ff3366', '#ffd700', '#ff8c00', '#00d4ff'] },
+         textinfo: 'label+percent', textposition: 'outside'
+      }];
+      Plotly.newPlot('chart-pie', pieData, { ...layoutBase, margin: { t: 40, r: 40, b: 40, l: 40 } }, { displayModeBar: false });
+
+      // 4. RISK PROFILE (Bar)
+      const riskLevels = [0, 0, 0, 0, 0, 0];
+      const allHistory = filter === 'all' ? S.completedEpisodes.flatMap(e => e.turns).concat(S.history) : episodes.flatMap(e => e.turns);
+      allHistory.forEach(h => { if(h.risk !== undefined) riskLevels[clamp(Math.round(h.risk), 0, 5)]++; });
+      const barData = [{
+         x: ['Safe', 'Low', 'Mod', 'High', 'Crit', 'Eme'],
+         y: riskLevels,
+         type: 'bar',
+         marker: { color: ['#00ff88', '#00d4ff', '#ffd700', '#ff8c00', '#ff3366', '#ff0000'], opacity: 0.7, line: { color: 'rgba(255,255,255,0.1)', width: 1 } }
+      }];
+      Plotly.newPlot('chart-risk', barData, { ...layoutBase, title: { text: 'Risk Exposure', font: { size: 10 } } }, { displayModeBar: false });
     }
 
     /* ════════════════════════════ SCENARIOS TAB */
@@ -3594,6 +3690,8 @@
                   const hex = text.replace(/\s/g, '');
                   let str = ''; for(let i=0; i<hex.length; i+=2) str += String.fromCharCode(parseInt(hex.substr(i,2), 16));
                   decoded = str || text;
+               } else if (/[A-Za-z0-9+/]{10,}={0,2}/.test(text)) { // Base64
+                  try { decoded = atob(text); } catch(e) { decoded = text; }
                }
             } catch(e) {}
             $('decoded-text').textContent = 'DECODED INTENT: ' + decoded;
