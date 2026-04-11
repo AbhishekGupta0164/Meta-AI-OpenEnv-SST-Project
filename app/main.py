@@ -47,12 +47,7 @@ class StepRequest(BaseModel):
 class GraderRequest(BaseModel):
     session_id: str
 
-class StepResponse(BaseModel):
-    reward: dict   # or Reward model
-    ...
-    def model_post_init(self):
-        if isinstance(self.reward, dict) and "score" in self.reward:
-            self.reward["score"] = _clamp(self.reward["score"])
+
 
 @app.get("/", include_in_schema=False)
 async def root(request: Request):

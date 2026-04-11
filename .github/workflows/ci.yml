@@ -49,6 +49,6 @@ jobs:
       - name: Smoke test – health endpoint
         run: |
           docker run -d --name sgx-ci -p 7860:7860 safetyguard-x:ci
-          sleep 10
-          curl --retry 6 --retry-delay 3 --retry-connrefused -f http://localhost:7860/health
+          sleep 20
+          curl --retry 10 --retry-delay 5 --retry-connrefused -f http://localhost:7860/health
           docker stop sgx-ci

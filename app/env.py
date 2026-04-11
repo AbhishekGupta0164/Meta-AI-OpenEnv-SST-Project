@@ -44,10 +44,8 @@ def _safe_breakdown(raw: Dict[str, Any]) -> Dict[str, float]:
     return result
 
 
-from app.adversary import AdversaryEngine
-
-class Episode:
     def __init__(self, task_id: str, scenario_index: int = 0):
+        from app.adversary import AdversaryEngine
         self.session_id          = str(uuid.uuid4())
         self.task_id             = task_id
         self.max_turns           = get_task_metadata(task_id)["max_turns"]
