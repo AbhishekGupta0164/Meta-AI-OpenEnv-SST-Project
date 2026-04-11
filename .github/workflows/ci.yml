@@ -49,6 +49,20 @@ jobs:
       - name: Smoke test – health endpoint
         run: |
           docker run -d --name sgx-ci -p 7860:7860 safetyguard-x:ci
-          sleep 20
-          curl --retry 10 --retry-delay 5 --retry-connrefused -f http://localhost:7860/health
+          echo "Waiting for server to start (max 90s)..."
+          SUCCESS=0
+          for i in {1..18}; do
+            if curl -s -f http://localhost:7860/health; then
+              echo "Server is up!"
+              SUCCESS=1
+              break
+            fi
+            echo "Waiting... ($((i*5))s)"
+            sleep 5
+          done
+          if [ $SUCCESS -eq 0 ]; then
+            echo "FAILED: Server did not start in time."
+            docker logs sgx-ci
+            exit 1
+          fi
           docker stop sgx-ci

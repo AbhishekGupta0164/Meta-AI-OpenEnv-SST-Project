@@ -76,7 +76,7 @@ async def root(request: Request):
 @app.get("/health", tags=["meta"])
 def health():
     return {
-        "status":      "healthy",
+        "status":      "ok",
         "environment": PROJECT_NAME,
         "version":     VERSION
     }
