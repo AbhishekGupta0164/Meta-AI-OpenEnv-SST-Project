@@ -28,6 +28,8 @@ I focused on making the AI fully autonomous while keeping full transparency thro
 *   📦 **Dataset Exporter**: Direct export to Hugging Face fine-tuning format
 *   🎯 **4 Core Tasks**: easy → medium → hard → expert                           
 *   🔥 **5 Attack Types**: direct, encoded, roleplay, emotional, semantic   
+*   🔍 **6-Engine Core**: Policy, Adversary, Memory, Grader, Environment, and **De-obfuscation Engine** [NEW]
+*   🛡️ **Safety Intent Decoding**: Real-time server-side translation of obfuscated queries (Hex/Base64)
 *   📈 **Shaped Rewards**: 6-metric reward function (clamped 0.01 – 0.99)
 *   🔌 **Standardized API**: Full OpenEnv spec (reset / step / state)                             
 *   📊 **Analytics Hub**: Beautiful interactive dashboard at `/ui`                           
@@ -75,7 +77,7 @@ research, and any team building production LLM safety systems.
 
 ---
 
-## 🏗️ Architecture — 5 Engines
+## 🏗️ Architecture — 6 Engines
 ```
 ┌─────────────────────────────────────────────────────┐
 │                 SafetyForge Arena v3.0               │
@@ -86,13 +88,13 @@ research, and any team building production LLM safety systems.
 │ 8 rules      │ Adaptive     │ History tracking      │
 │ Conflict     │ Attack Gen   │ Risk trajectory       │
 │ detection    │ (LiteLLM)    │ Escalation patterns   │
-├──────────────┴──────────────┴───────────────────────┤
-│              Grader Engine                          │
-│   6-metric weighted score (0.01 – 0.99)              │
-├─────────────────────────────────────────────────────┤
-│              Environment Engine                     │
-│         reset() / step() / state()                  │
-└─────────────────────────────────────────────────────┘
+├──────────────┼──────────────┼───────────────────────┤
+│   Grader     │   Decoding   │      Env              │
+│   Engine     │   Engine     │      Engine           │
+│              │              │                       │
+│ 6-metric     │ Multi-format │ reset() / step()      │
+│ scoring      │ de-obfuscate │ state()               │
+└──────────────┴──────────────┴───────────────────────┘
 ```
 
 ---
