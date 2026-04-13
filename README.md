@@ -31,7 +31,7 @@ I focused on making the AI fully autonomous while keeping full transparency thro
 *   🎯 **4 Core Tasks**: easy → medium → hard → expert                           
 *   🔥 **5 Attack Types**: direct, encoded, roleplay, emotional, semantic   
 *   🔍 **6-Engine Core**: Policy, Adversary, Memory, Grader, Environment, and **De-obfuscation Engine** [NEW]
-*   🛡️ **Safety Intent Decoding**: Real-time server-side translation of obfuscated queries (Hex/Base64)
+*   🛡️ **Safety Intent Decoding**: Real-time server-side translation of obfuscated queries (Binary/Hex/Decimal/Leet/Base64)
 *   📈 **Shaped Rewards**: 6-metric reward function (clamped 0.01 – 0.99)
 *   🔌 **Standardized API**: Full OpenEnv spec (reset / step / state)                             
 *   📊 **Analytics Hub**: Beautiful interactive dashboard at `/ui`                           
